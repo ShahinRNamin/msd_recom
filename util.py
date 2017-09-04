@@ -1,9 +1,8 @@
 '''
-Utilities that are probably required for every single model for the MSD last.fm dataset
+#Utilities that are probably required for every single model for the MSD last.fm dataset
 '''
 
 import subprocess
-import pickle
 import sys , getopt
 
 

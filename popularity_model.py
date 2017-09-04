@@ -1,7 +1,7 @@
 '''
 #The easiest and most naive and dumb model possible.
-Recommending the most popular songs to all users.
-No personalization is considered
+#Recommending the most popular songs to all users.
+#No personalization is considered
 '''
 
 import util
@@ -20,13 +20,13 @@ def compute_popularity(user_song_file,count_no_listens=False,dump_results_to_dis
         for line in f:
             counter +=1
             user,song,pop_str = line.strip().split('\t')
-            popularity_inc=1 #the value to add to popularity for the current user/song listen.
+            popularity_increm=int(1) #the value to add to popularity for the current user/song listen.
             if count_no_listens is True:
                 popularity_increm= int(pop_str)
             if song in song_to_count:
                 song_to_count[song] +=popularity_increm
             else:
-                song_to_count[song] =popularity_inc
+                song_to_count[song] =popularity_increm
 
             if user in user_to_songs:
                 user_to_songs[user].add(song)
@@ -90,16 +90,24 @@ if __name__ == "__main__":
     parser.add_argument("--users" , help="validation/test users file",default='/media/shahin/data/msd_recom/data/kaggle_files/kaggle_users.txt')
     parser.add_argument("--ratings" , help="user/song/noListens file",default='/media/shahin/data/msd_recom/data/kaggle_files/kaggle_visible_evaluation_triplets.txt')
     parser.add_argument("--submission" , help="submission file to save" , default = "submission.txt")
+    parser.add_argument("--counts" , help="use number of listens in popularity model (Y/N)" , default="N")
     args = parser.parse_args()
 
     songs_file = args.songs
     users_file = args.users
     user_songs_file = args.ratings
     submission_file = args.submission
+    use_count_str = args.counts.lower()
+    use_NoListens=False
+    if use_count_str == 'y':
+        use_NoListens=True
+    elif use_count_str != 'n':
+        print("--counts should be either N or Y")
+        exit()
 
     songs_order=util.list_songs(songs_file)
     users_order=util.list_users(users_file)
     # user_item_listens = util.list_users_listened_songs()
-    (popularity_songs,users_listened_songs) = compute_popularity(user_songs_file,count_no_listens=True,dump_results_to_disk=True)
+    (popularity_songs,users_listened_songs) = compute_popularity(user_songs_file,count_no_listens=use_NoListens,dump_results_to_disk=True)
 
     make_submission_file(submission_file,popularity_songs , users_listened_songs, users_order, songs_order )
