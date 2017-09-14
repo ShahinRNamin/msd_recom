@@ -247,7 +247,7 @@ dmp_file_name='year1_test_triplets_hidden.dmp' # 0.081881861477  # 0.07504328616
 #dmp_file_name='year1_valid_triplets_visible.dmp' # 0.0782884366079 # 0.0722377345167
 
 ground_truth_dmp_file = '/media/shahin/data/msd_recom/git/msd_recom/data_prep/'+ dmp_file_name
-prediction_txt_file = '/media/shahin/data/msd_recom/submissions/popularity_by_user_count.txt' #'/media/shahin/data/msd_recom/submissions/popular_songs_by_user.txt'
+prediction_txt_file = '/media/shahin/data/msd_recom/submissions/popularity_by_noListen_count.txt' #'/media/shahin/data/msd_recom/submissions/popular_songs_by_user.txt'
 
 print ('\n map value is: ' + str(eval_map_test2(ground_truth_dmp_file, prediction_txt_file,k_param=100)))
 

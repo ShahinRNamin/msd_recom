@@ -30,8 +30,8 @@ DB_USER = 'millionsongs'
 DB_PASSWORD = 'millionsongs'
 DB_NAME = 'millionsongs'
 
-HDF5_BASE_DIR='/media/shahin/data/msd_recom/data/msd_subset_data/MillionSongSubset/data'
-
+#HDF5_BASE_DIR='/media/shahin/data/msd_recom/data/msd_subset_data/MillionSongSubset/data'
+HDF5_BASE_DIR = '/media/shahin/1ad8a514-de7f-485a-ba08-8a0f921ee083/million_songs_dataset'
 
 
 
@@ -73,9 +73,11 @@ if __name__ == '__main__':
 
         '''Code to fill the terms'''
 
+        print 'filling terms'
+
 
         def fill_terms(filename):
-            print filename
+            # print filename
             f = h5py.File(filename, 'r')
             #read terms, lowercase them and strip (trim) them
             term_vals = map(lambda x: x.strip().lower() , list(f['metadata']['artist_terms']))
@@ -87,12 +89,15 @@ if __name__ == '__main__':
                     cursor.callproc('fill_term',[term])
                     cursor.close()
         # apply_to_all_files(HDF5_BASE_DIR,func=lambda x: fill_terms(x))
+        #
+        # conn.commit()
 
         '''code to fill the tags'''
 
+        print 'filling tags'
 
         def fill_tags(filename):
-            print filename
+            # print filename
             f = h5py.File(filename, 'r')
             tag_vals = map(lambda x: x.strip().lower(), list(f['musicbrainz']['artist_mbtags']))
             f.close()
@@ -103,12 +108,16 @@ if __name__ == '__main__':
                     cursor.close()
 
         # apply_to_all_files(HDF5_BASE_DIR, func=lambda x: fill_tags(x))
+        #
+        # conn.commit()
 
 
         '''code to fill the artists table'''
 
+        print 'filling artists'
+
         def fill_artists(filename):
-            print filename
+            #print filename
             f = h5py.File(filename, 'r')
             artists_attributes = set(zip(f['metadata']['songs']['artist_name']  ,\
                                     f['metadata']['songs']['artist_familiarity'] ,\
@@ -128,12 +137,16 @@ if __name__ == '__main__':
                     cursor.callproc('fill_artist', artist_info)
                     cursor.close()
 
-        #apply_to_all_files(HDF5_BASE_DIR, func=lambda x: fill_artists(x))
+        # apply_to_all_files(HDF5_BASE_DIR, func=lambda x: fill_artists(x))
+        #
+        # conn.commit()
 
         '''code to fill the albums table'''
 
+        print 'filling albums'
+
         def fill_albums(filename):
-            print filename
+            # print filename
             f = h5py.File(filename, 'r')
             albums_attributes = set(zip(f['metadata']['songs']['release']  , \
                                         f['metadata']['songs']['release_7digitalid'] ,
@@ -146,12 +159,16 @@ if __name__ == '__main__':
                     cursor.close()
 
 
-        #apply_to_all_files(HDF5_BASE_DIR, func=lambda x: fill_albums(x))
+        # apply_to_all_files(HDF5_BASE_DIR, func=lambda x: fill_albums(x))
+        #
+        # conn.commit()
 
         '''code to fill the songs table'''
 
+        print 'filling songs'
+
         def fill_songs(filename):
-            print filename
+            # print filename
             f = h5py.File(filename, 'r')
             #fetching all the information about the song, and the keys to search for, to find its album and artist
             songs_attributes = set(zip(f['metadata']['songs']['song_id'], \
@@ -177,13 +194,17 @@ if __name__ == '__main__':
                 cursor.callproc('fill_song', song_info)
                 cursor.close()
 
-        #apply_to_all_files(HDF5_BASE_DIR, func=lambda x: fill_songs(x))
+        # apply_to_all_files(HDF5_BASE_DIR, func=lambda x: fill_songs(x))
+        #
+        # conn.commit()
 
         '''code to fill the artist_terms table'''
 
+        print 'filling artist_terms'
+
 
         def fill_artist_terms(filename):
-            print filename
+            # print filename
             f = h5py.File(filename, 'r')
             artist_id = f['metadata']['songs']['artist_id'][0]
             terms = list(f['metadata']['artist_terms'])
@@ -201,14 +222,18 @@ if __name__ == '__main__':
                 cursor.callproc('fill_artist_term', [artist_db_id,term,freq,weight])
                 cursor.close()
 
-        #apply_to_all_files(HDF5_BASE_DIR, func=lambda x: fill_artist_terms(x))
+        apply_to_all_files(HDF5_BASE_DIR, func=lambda x: fill_artist_terms(x))
+
+        conn.commit()
 
 
         '''code to fill the artist_tags table'''
 
+        print 'filling artist tags'
+
 
         def fill_artist_tags(filename):
-            print filename
+            # print filename
             f = h5py.File(filename, 'r')
             artist_id = f['metadata']['songs']['artist_id'][0]
             tags = list(f['musicbrainz']['artist_mbtags'])
@@ -225,10 +250,16 @@ if __name__ == '__main__':
                 cursor.close()
 
 
-        #apply_to_all_files(HDF5_BASE_DIR, func=lambda x: fill_artist_tags(x))
+        apply_to_all_files(HDF5_BASE_DIR, func=lambda x: fill_artist_tags(x))
+
+        conn.commit()
+
+        '''code to fill the arist similarities'''
+
+        print 'filling artist similarities'
 
         def fill_artist_similarities(filename):
-            print filename
+            # print filename
             f = h5py.File(filename, 'r')
             artist_id = f['metadata']['songs']['artist_id'][0]
             similar_artists=list(f['metadata']['similar_artists'])
@@ -244,9 +275,9 @@ if __name__ == '__main__':
                 cursor.close()
 
 
-        apply_to_all_files(HDF5_BASE_DIR, func=lambda x: fill_artist_similarities(x))
-
-        conn.commit()
+        # apply_to_all_files(HDF5_BASE_DIR, func=lambda x: fill_artist_similarities(x))
+        #
+        # conn.commit()
         conn.close()
 
 
